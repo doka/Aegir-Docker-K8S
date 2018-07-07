@@ -98,13 +98,13 @@ RUN chmod +x /usr/local/bin/drush
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-#### 8 - switch to Aegir user
+#### 8 - copy makefiles generating platforms for Aegir
+RUN mkdir -p /srv/aegir/makefiles
+COPY platform-makefile/*.make.yml /srv/aegir/makefiles/
+
+#### 9 - switch to Aegir user
 USER aegir
 WORKDIR /var/aegir
-
-#### 9 - copy makefiles generating platforms for Aegir
-RUN mkdir -p /var/aegir/makefiles
-COPY platform-makefile/*.make.yml /var/aegir/makefiles/
 
 #### 10 - docker-entrypoint.sh waits for database and
 # runs Aegir install/upgrade as aegir user

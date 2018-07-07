@@ -127,7 +127,7 @@ drush @hostmaster cc all
 
 # prepare platform from makefiles
 echo "ÆGIR | Deploy platforms in Aegir from makefiles... "
-cd /var/aegir/makefiles
+cd /srv/aegir/makefiles
 for MAKEFILE in *; do
   PLATFORM=${MAKEFILE%%.make.yml} # strips directory name from filename
   echo "ÆGIR | Platform is: $PLATFORM"
