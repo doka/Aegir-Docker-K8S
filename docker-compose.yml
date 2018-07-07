@@ -1,0 +1,57 @@
+#
+# Docker compose file to run full Aegir landscape to host Durpal & CiviCRM sites
+#
+# Usage:
+# 1. read and change this file:
+#    - change MYSQL_ROOT_PASSWORD (in both services!)
+#    - set AEGIR_VERSION
+#
+# 2. images to use
+#    - default is to download from wepoca/aegir
+#    - to use your local build, uncomment line "build: ." and
+#      remove the line "image: wepoca/aegir"
+#
+# 3. use docker-compose.yml to start up volumes, containers to fly :)
+#    start up using wepoca/aegir:
+#      docker-compose up
+#    start up using your own local builds:
+#      docker-compose up --build
+#
+# 4. shut down:
+#      docker-compose down
+#    full shutdown, including remove of all data of persistent volumes:
+#      docker-compose down --volume
+
+version: "3"
+services:
+
+  # the container to run Aegir
+  aegir:
+    # use an image from repo
+    image: wepoca/aegir
+    # uncomment next line to use your local build, from the Dockerfile:
+    # build: .
+
+    ports:
+      - 80:80
+    hostname: aegir.local.computer
+    environment:
+      AEGIR_DATABASE_SERVER: database
+      MYSQL_ROOT_PASSWORD: strongpassword
+      AEGIR_VERSION: 7.x-3.151
+    volumes:
+      - var-aegir:/var/aegir
+
+  database:
+    image: mariadb
+    logging:
+      driver: none
+    environment:
+      MYSQL_ROOT_PASSWORD: strongpassword
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  # using default (local) driver
+  db-data:
+  var-aegir:

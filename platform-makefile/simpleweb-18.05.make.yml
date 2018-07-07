@@ -1,0 +1,52 @@
+core: 7.x
+api: 2
+defaults:
+  projects:
+    subdir: contrib
+projects:
+  drupal:
+    type: core
+    version: 7.59
+  imce:
+    # IMCE - file uploader and browser
+    # https://drupal.org/project/imce
+    version: 1.11
+  wysiwyg:
+    # wysiwyg - abstaction layer for client side editors
+    # https://drupal.org/project/wysiwyg
+    version: 2.5
+  imce_wysiwyg:
+    # IMCE Wysiwyg integration bridge
+    # https://drupal.org/project/imce_wysiwyg
+    version: 1.0
+  views:
+    version: 3.20
+  ctools:
+    version: 1.14
+  advanced_help:
+    version: 1.4
+  google_analytics:
+    version: 2.4
+  # themes:
+  danland:
+    type: theme
+    version: 1.0
+  nitobe:
+    type: theme
+    version: 2.0-beta1
+  professional_theme:
+    type: theme
+    version: 2.05
+  business:
+    type: theme
+    version: 1.11
+#
+libraries:
+  ckeditor:
+    destination: libraries
+    directory_name: ckeditor
+    download:
+      type: get
+      url: 'https://download.cksource.com/CKEditor/CKEditor/CKEditor%204.9.2/ckeditor_4.9.2_standard.tar.gz'
+    overwrite: true
+    type: library
