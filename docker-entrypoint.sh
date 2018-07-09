@@ -127,11 +127,20 @@ else
 fi
 
 # clean caches
+echo "ÆGIR | -------------------------"
 echo "ÆGIR | Clear all caches ... "
 drush cc drush
 drush @hostmaster cc all
 
+# restart cron service
+# it seems necessary to restart cron for the user crontab changes to take effect
+echo "ÆGIR | -------------------------"
+echo "ÆGIR | Start cron service ... "
+sudo /etc/init.d/cron restart
+sudo /etc/init.d/cron status
+
 # prepare platform from makefiles
+echo "ÆGIR | -------------------------"
 echo "ÆGIR | Deploy platforms in Aegir from makefiles... "
 cd /srv/aegir/makefiles
 for MAKEFILE in *; do
@@ -147,5 +156,6 @@ for MAKEFILE in *; do
 done
 
 # Run whatever is the Docker CMD, typically drush @hostmaster hosting-queued
+echo "ÆGIR | -------------------------"
 echo "ÆGIR | Running Docker Command '$@' ..."
 exec "$@"
