@@ -102,11 +102,20 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN mkdir -p /srv/aegir/makefiles
 COPY platform-makefile/*.make.yml /srv/aegir/makefiles/
 
-#### 9 - switch to Aegir user
+#### 9 - prepare scripts for CiviCRM hosting
+# Install standalone fix-permissions and fix-ownership scripts
+# This setup is a hack and a workaround for faulty script
+# https://www.drupal.org/project/hosting_civicrm/issues/2791953
+COPY standalone-install-fix-permissions-ownership.sh /usr/local/bin/
+RUN bash standalone-install-fix-permissions-ownership.sh
+RUN wget https://raw.githubusercontent.com/coopsymbiotic/coopsymbiotic-ansible/493afcecd035ca513962d1a89574f1d3d88cea2d/roles/aegir/templates/usr/local/bin/fix-drupal-site-permissions.sh -O - -q > /usr/local/bin/fix-drupal-site-permissions.sh
+RUN chmod +x /usr/local/bin/fix-drupal-site-permissions.sh
+
+#### 10 - switch to Aegir user
 USER aegir
 WORKDIR /var/aegir
 
-#### 10 - docker-entrypoint.sh waits for database and
+#### 11 - docker-entrypoint.sh waits for database and
 # runs Aegir install/upgrade as aegir user
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["drush", "@hostmaster", "hosting-queued"]

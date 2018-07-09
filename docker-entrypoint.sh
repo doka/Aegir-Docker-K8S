@@ -116,8 +116,14 @@ else
   set -e
   echo "ÆGIR | Running 'drush cc drush' ... "
   drush cc drush
+
+  # enable modules
   echo "ÆGIR | Enabling hosting queued..."
   drush @hostmaster en hosting_queued -y
+
+  echo "ÆGIR | Enabling hosting modules for CiviCRM ..."
+  # fix_permissions, fix_ownership, hosting_civicrm, hosting_civicrm_cron
+  drush @hostmaster en hosting_civicrm_cron -y
 fi
 
 # clean caches
