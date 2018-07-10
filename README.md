@@ -2,9 +2,9 @@
 
 This is a Docker environment to run, test and develop Aegir in Docker.
 
-Images are based on:
-- [stretch](https://cloud.docker.com/swarm/wepoca/repository/docker/wepoca/stretch-php7): Debian 9 and Ubuntu 16.04 LTS.
-- [lts](https://cloud.docker.com/swarm/wepoca/repository/docker/wepoca/lts-php7): PHP 7.0 and Apache2, and mariadb
+Images are based on Debian 9 or Ubuntu 16.04 LTS, all with PHP 7.0 and Apache2:
+- [stretch](https://cloud.docker.com/swarm/wepoca/repository/docker/wepoca/stretch-php7): Debian 9.
+- [lts](https://cloud.docker.com/swarm/wepoca/repository/docker/wepoca/lts-php7): Ubuntu 16.04 LTS
 
 ## Usage:
 1. read and change docker-compose.yml:
