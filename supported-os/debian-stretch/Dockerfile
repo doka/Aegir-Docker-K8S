@@ -20,7 +20,6 @@
 # ----------------------------------
 # TODO:
 # - proper clean-up to minimize image size
-# - is the curl package needed?
 # - install the PECL uploadprogress library
 # - adjust PHP settings
 #

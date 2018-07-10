@@ -20,7 +20,6 @@
 # ----------------------------------
 # TODO:
 # - proper clean-up to minimize image size
-# - is the curl package needed?
 # - install the PECL uploadprogress library
 # - adjust PHP settings
 #
@@ -42,7 +41,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
   php7.0-mysql \
   php7.0-mcrypt \
   postfix \
-  \
+  cron \
   nano \
   sudo \
   rsync \
