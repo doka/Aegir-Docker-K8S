@@ -1,0 +1,150 @@
+## Aegir service
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegir
+  labels:
+    app: aegir
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: aegir
+    tier: frontend
+  type: LoadBalancer
+---
+# Database service
+apiVersion: v1
+kind: Service
+metadata:
+  name: aegir-mysql
+  labels:
+    app: aegir
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: aegir
+    tier: mysql
+  clusterIP: None
+---
+# Persistent volume claim for Aegir
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aegir-pvc
+  labels:
+    app: aegir
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Persistent volume claim for database
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: aegir
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+---
+# Set database root password as secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass
+type: Opaque
+data:
+  password: $(echo -n "wepoca" | base64)
+---
+# Database deployment on Kubernetes
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegir-mysql
+  labels:
+    app: aegir
+spec:
+  selector:
+    matchLabels:
+      app: aegir
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: aegir
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+---
+# Aegir deployment on Kubernetes
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aegir
+  labels:
+    app: aegir
+spec:
+  selector:
+    matchLabels:
+      app: aegir
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: aegir
+        tier: frontend
+    spec:
+      containers:
+      - image: wepoca/aegir
+        name: aegir
+        env:
+        - name: AEGIR_VERSION
+          value: 7.x-3.151
+        - name: AEGIR_DATABASE_SERVER
+          value: aegir-mysql
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 80
+          name: aegir
+        volumeMounts:
+        - name: var-aegir
+          mountPath: /var/aegir
+      volumes:
+      - name: var-aegir
+        persistentVolumeClaim:
+          claimName: aegir-pvc
